@@ -1,6 +1,14 @@
 #!/usr/bin/env python
+"""
+Generates a flat icon from Provides NumberList and FrequencyDistribution, classes for statistics.
+"""
 
-# Hello World in GIMP Python
+__author__ = "Giuseppe Caliendo"
+__copyright__ = "Copyright 2007, The Cogent Project"
+__credits__ = ["Giuseppe Caliendo"]
+__license__ = "GPL"
+__version__ = "2.0"
+__maintainer__ = "Giuseppe Caliendo"
 
 from gimpfu import *
 
@@ -35,10 +43,16 @@ def flat_icon_generator(name, size, color, filename) :
 	pdb.gimp_undo_push_group_start(img)
 	
 	# Add the icon image, colorize to white, resize and add to image
-	icon_layer = pdb.gimp_file_load_layer(img, filename)
+	if filename[-3:] == "svg":
+		svg_image = pdb.file_svg_load(filename, filename, 90, -110, -110, 0)
+		icon_layer = pdb.gimp_image_get_active_drawable(svg_image)
+		pdb.gimp_colorize(icon_layer, 180, 50, 100)
+	else:
+		icon_layer = pdb.gimp_file_load_layer(img, filename)
+	
 	img.add_layer(icon_layer, 0)
-	pdb.gimp_colorize(icon_layer, 180, 50, 100)
 	pdb.gimp_layer_scale(icon_layer, 110, 110, False)
+	pdb.gimp_layer_translate(icon_layer, 17, 17)
 	
 	# Close the undo group.
 	pdb.gimp_undo_push_group_end(img)
@@ -55,7 +69,7 @@ def flat_icon_generator(name, size, color, filename) :
 register(
 	"flat_icon_generator",
 	"Flat Icon Generator",
-	"Create a new flt icon with your image",
+	"Create a new flat icon with your image and color",
 	"Giuseppe Caliendo",
 	"Giuseppe Caliendo",
 	"2014",
